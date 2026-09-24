@@ -4,14 +4,14 @@ import java.util.Scanner;
 public class GuessingNumberGame {
     public static void main(String[] args) {
 
-        // Create objects for random number generation and user input
+        // Random selects the secret number; Scanner reads the player's guesses.
         Random random = new Random();
         Scanner sc = new Scanner(System.in);
 
-        // Set the maximum number of attempts per game
+        // The player may make at most ten valid guesses in each game.
         int maxAttempts = 10;
 
-        // Overall game statistics
+        // Scalar variables maintain the multiple-game statistics; no array is needed.
         int totalGamesPlayed = 0;
         int totalGamesWon = 0;
         int totalGamesLost = 0;
@@ -23,7 +23,7 @@ public class GuessingNumberGame {
 
         do {
 
-            // Generate a random number from 1 to 100
+            // Generate a new secret number from 1 through 100 for each round.
             int numberToGuess = random.nextInt(100) + 1;
 
             // Variables for the current game
@@ -31,14 +31,14 @@ public class GuessingNumberGame {
             int attempts = 0;
             int totalGuess = 0;
 
-            // Set initial values for highest and lowest guesses
+            // These values are updated only after a valid guess is entered.
             int highestGuess = Integer.MIN_VALUE;
             int lowestGuess = Integer.MAX_VALUE;
 
-            // Determines whether the player successfully guessed the number
+            // Track whether this round ended with a correct guess.
             boolean won = false;
 
-            // Display the game introduction
+            // Display the rules and limits before the round begins.
             System.out.println("\n==================================");
             System.out.println("   WELCOME TO GUESS THE NUMBER");
             System.out.println("==================================");
@@ -51,7 +51,18 @@ public class GuessingNumberGame {
             while (attempts < maxAttempts) {
 
                 System.out.print("Guess: ");
+                if (!sc.hasNextInt()) {
+                    System.out.println("Please enter a whole number from 1 to 100.");
+                    sc.next();
+                    continue;
+                }
                 guess = sc.nextInt();
+
+                // Out-of-range values are not valid guesses and do not use an attempt.
+                if (guess < 1 || guess > 100) {
+                    System.out.println("Guess must be between 1 and 100.");
+                    continue;
+                }
 
                 // Count the current attempt
                 attempts++;
@@ -69,14 +80,14 @@ public class GuessingNumberGame {
                     lowestGuess = guess;
                 }
 
-                // Check if the guess is correct
+                // Compare the valid guess with the secret number.
                 if (guess == numberToGuess) {
                     System.out.println("Correct! You guessed the number!");
                     won = true;
                     break;
                 }
 
-                // Give the player a hint
+                // Give a directional hint after an incorrect guess.
                 else if (guess > numberToGuess) {
                     System.out.println("Too high!");
                 }
@@ -92,25 +103,23 @@ public class GuessingNumberGame {
                 }
             }
 
-            // If the player did not guess correctly,
-            // the game is considered lost
+            // Reaching the attempt limit without a correct guess is a loss.
             if (!won) {
                 System.out.println("\nMaximum attempts reached!");
                 System.out.println("The secret number was: " + numberToGuess);
             }
 
-            // Calculate the average of all guesses in the current game
+            // Calculate the average of the valid guesses in this round.
             double averageGuess = (double) totalGuess / attempts;
 
-            // Update overall game statistics
+            // Update the cumulative statistics for all completed rounds.
             totalGamesPlayed++;
             totalAttemptsAllGames += attempts;
 
             if (won) {
                 totalGamesWon++;
 
-                // Update the best score if this is the first win
-                // or if the player used fewer attempts
+                // A lower number of attempts is a better winning score.
                 if (bestScore == 0 || attempts < bestScore) {
                     bestScore = attempts;
                 }
@@ -119,7 +128,7 @@ public class GuessingNumberGame {
                 totalGamesLost++;
             }
 
-            // Display statistics for the current game
+            // Display the required statistics for the completed round.
             System.out.println("\n========== GAME STATISTICS ==========");
             System.out.println("Secret Number: " + numberToGuess);
             System.out.println("Attempts: " + attempts);
@@ -127,7 +136,7 @@ public class GuessingNumberGame {
             System.out.println("Lowest Guess: " + lowestGuess);
             System.out.printf("Average Guess: %.2f%n", averageGuess);
 
-            // Ask the player whether they want to play again
+            // Offer the multiple-round challenge after each completed round.
             do {
                 System.out.println("\n1. Try Again");
                 System.out.println("2. Exit");
@@ -135,7 +144,7 @@ public class GuessingNumberGame {
 
                 tryAgain = sc.nextInt();
 
-                // Validate the player's choice
+                // Only 1 (play again) and 2 (exit) are valid choices.
                 if (tryAgain != 1 && tryAgain != 2) {
                     System.out.println(
                         "Invalid choice, please enter 1 or 2."
@@ -146,11 +155,11 @@ public class GuessingNumberGame {
 
         } while (tryAgain == 1);
 
-        // Calculate the average number of attempts across all games
+        // Calculate the average attempts across all completed games.
         double averageAttempts =
                 (double) totalAttemptsAllGames / totalGamesPlayed;
 
-        // Display the overall statistics
+        // Display the final multiple-game statistics.
         System.out.println("\n======================================");
         System.out.println("       OVERALL GAME STATISTICS");
         System.out.println("======================================");
@@ -158,7 +167,7 @@ public class GuessingNumberGame {
         System.out.println("Total Games Won: " + totalGamesWon);
         System.out.println("Total Games Lost: " + totalGamesLost);
 
-        // Only display a best score if the player won at least one game
+        // A best score exists only when at least one game was won.
         if (bestScore > 0) {
             System.out.println("Best Score: " + bestScore + " attempts");
         }
@@ -168,7 +177,6 @@ public class GuessingNumberGame {
 
         System.out.printf("Average Attempts: %.2f%n", averageAttempts);
 
-        // Close the Scanner
         sc.close();
     }
 }

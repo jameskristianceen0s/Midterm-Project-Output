@@ -2,96 +2,94 @@ import java.util.Scanner;
 
 public class PrimeNumberAnalysis {
 
-   // Helper method to check if a number is prime
+   // A prime number is greater than 1 and has no divisors other than 1 and itself.
    public static boolean isPrime(int n) {
-      if (n < 2) return false;
-      for (int i = 2; i * i <= n; i++) {
-         if (n % i == 0) return false;
+      if (n < 2) {
+         return false;
       }
-      return true;   
-   }      
+
+      // n / i avoids overflow when checking large integer values.
+      for (int i = 2; i <= n / i; i++) {
+         if (n % i == 0) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
    public static void main(String[] args) {
       Scanner sc = new Scanner(System.in);
       
-      System.out.print("Enter a number: ");
+      System.out.print("Enter N: ");
+      if (!sc.hasNextInt()) {
+         System.out.println("Please enter a valid integer.");
+         sc.close();
+         return;
+      }
       int N = sc.nextInt();
       
-      // Variables for tracking stats
-      int count = 0;
+      // Scalar variables track every required result; no array stores the primes.
+      int totalPrimes = 0;
       int smallestPrime = -1;
       int largestPrime = -1;
       long sum = 0;
       
-      // Variables for tracking the prime gap
+      // Keep only consecutive prime values to calculate the largest gap.
       int previousPrime = -1;
       int currentPrime = -1;
       int largestGap = 0;
       
-      System.out.println("==== PRIME ANALYSIS ====");
-      System.out.println("\nPrimes]n");
+      System.out.println("\n==== PRIME ANALYSIS ====");
+      System.out.println("\nPrimes:");
       
-      // Loop through all numbers up to N
-      for (int i = 2; i <=N; i++) {
-         if (isPrime(i)){
-         // Print the prime number
-         System.out.print(i + " ");
-         // Increase the total number of primes
-         totalPrime++;
+      // Test and print every number from 2 through N.
+      for (int i = 2; i <= N; i++) {
+         if (isPrime(i)) {
+            currentPrime = i;
+            System.out.print(currentPrime + " ");
+            totalPrimes++;
 
-          // Add the prime to the total sum
-         sum += i;
+            sum += currentPrime;
 
-         // Set the smallest prime
-         // The first prime encountered is the smallest
-         if (smallestPrime == -1) {
-            smallestPrime = i;
-         }
+            // The first prime encountered is the smallest.
+            if (smallestPrime == -1) {
+               smallestPrime = currentPrime;
+            }
 
-         // Update the largest prime
-         largestPrime = i;
+            // The loop is ascending, so the latest prime is the largest.
+            largestPrime = currentPrime;
 
-         // Calculate the gap between the current
-         // prime and the previous prime
-         if (previousPrime != -1) {
+            // Compare consecutive primes and retain only the largest gap.
+            if (previousPrime != -1) {
+               int gap = currentPrime - previousPrime;
 
-               int gap = i - previousPrime;
-
-               // Update the largest gap if necessary
                if (gap > largestGap) {
                   largestGap = gap;
                }
             }
 
-            // Store the current prime as the previous prime
-            previousPrime = i;
+            previousPrime = currentPrime;
          }
       }
 
-      System.out.println();
+      System.out.println("\n");
 
-      // Check if at least one prime number was found
-      if (totalPrime > 0) {
+      if (totalPrimes > 0) {
 
-         // Calculate the average of all prime numbers
-         double average = (double) sum / totalPrime;
+         double average = (double) sum / totalPrimes;
 
-         // Display the prime number statistics
-         System.out.println("\nTotal Primes: " + totalPrime);
-         System.out.println("Smallest Prime: " + smallestPrime);
-         System.out.println("Largest Prime: " + largestPrime);
+         System.out.println("Total primes: " + totalPrimes);
+         System.out.println("Smallest prime: " + smallestPrime);
+         System.out.println("Largest prime: " + largestPrime);
          System.out.println("Sum: " + sum);
          System.out.printf("Average: %.2f%n", average);
-         System.out.println("Largest Gap: " + largestGap);
+         System.out.println("Largest prime gap:\n" + largestGap);
 
       } else {
-
-         // Display this message if there are no primes
          System.out.println("No prime numbers found.");
       }
 
-      // Close the Scanner
       sc.close();
-
-      // Add numbers 3-7 from the instructions 
-  }
+   }
 }
